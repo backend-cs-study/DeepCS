@@ -16,20 +16,37 @@
 ## 1.2.1 선언형과 함수형 프로그래밍
 ### 🟦 선언형 프로그래밍
 절차형 프로그래밍은 명령문의 순서와 제어 흐름을 중시하며, 프로그램을 함수와 절차의 집합으로 구성합니다. 대표적으로 C 언어가 있으며, 상태의 변화와 순차적 실행이 특징입니다.
-- **무엇(What)**을 할 것인지에 집중합니다.
+- 무엇(What) 을 할 것인지에 집중합니다.
 - 예시: SQL에서 SELECT name FROM users WHERE age > 20
 - → "어떻게"가 아니라 "무엇을" 얻고 싶은지 선언합니다.
 ### 🟩 함수형 프로그래밍
 함수형 프로그래밍은 선언형의 하위 집합으로, 데이터를 수학적 함수의 계산처럼 처리하고 상태와 가변 데이터를 피합니다. 순수 함수, 불변성(immutability), 고차 함수, 1급 함수(first-class function), 함수 조합(composability) 등이 핵심 키워드입니다
-```
-// JavaScript 예시
-const double = x => x * 2; // 순수 함수
-[1,2,3].map(double);       // 고차 함수(map)
-```
 #### 🔹순수 함수
 순수 함수(pure function)는 동일한 입력에 대해 항상 동일한 출력을 반환하며, 외부 상태나 부작용(side effect)이 없습니다. 이로 인해 테스트와 예측이 쉬워지고, 프로그램의 신뢰성이 높아집니다
+```
+// 입력값에만 의존하고 외부 상태를 변경하지 않는 순수 함수
+public static int pureAdd(int a, int b) {
+    return a + b;  // 항상 동일 입력 → 동일 출력
+}
+
+// Math 클래스의 메서드 대부분은 순수 함수
+double result = Math.sqrt(4.0);  // 항상 2.0 반환
+```
 #### 🔹고차 함수
 고차 함수(higher-order function)는 함수를 인자로 받거나 반환하는 함수로, 함수의 조합과 추상화, 재사용성을 높여줍니다. 언어가 1급 함수를 지원해야 고차 함수 사용이 가능합니다
+```
+// 함수를 매개변수로 받는 고차 함수
+public static <T> List<T> filter(List<T> list, Predicate<T> predicate) {
+    return list.stream()
+               .filter(predicate)
+               .collect(Collectors.toList());
+}
+
+// 사용 예시
+List<Integer> numbers = Arrays.asList(1, 2, 3, 4);
+List<Integer> evens = filter(numbers, n -> n % 2 == 0);  // [2, 4]
+```
+
 
 ## 1.2.2 객체지향 프로그래밍
 OOP는 현실 세계의 개체(객체)를 소프트웨어로 모델링하여, 데이터(속성)와 메서드(행동)를 하나의 단위로 묶고, 객체 간 상호작용으로 시스템을 구성합니다. 클래스, 인스턴스, 메시지 전달, 캡슐화, 상속, 다형성, 추상화가 주요 키워드입니다
@@ -43,13 +60,60 @@ OOP는 현실 세계의 개체(객체)를 소프트웨어로 모델링하여, �
 다형성(polymorphism)은 동일한 인터페이스로 다양한 객체를 다룰 수 있게 하며, 오버로딩(같은 이름의 메서드를 매개변수로 구분)과 오버라이딩(상위 클래스 메서드를 하위 클래스에서 재정의)으로 구현됩니다
 
 - 오버로딩: 같은 이름의 메서드를 매개변수 타입이나 개수로 구분하여 여러 번 정의
+```
+class MathUtil {
+    // 정수 덧셈
+    int add(int a, int b) {
+        return a + b;
+    }
+    
+    // 실수 덧셈 (매개변수 타입 변경)
+    double add(double a, double b) {
+        return a + b;
+    }
+    
+    // 세 정수 덧셈 (매개변수 개수 추가)
+    int add(int a, int b, int c) {
+        return a + b + c;
+    }
+}
+// 동작 예시
+MathUtil util = new MathUtil();
+System.out.println(util.add(2, 3));       // 5
+System.out.println(util.add(2.5, 3.5));   // 6.0
+System.out.println(util.add(1, 2, 3));    // 6
 
+```
 - 오버라이딩: 상위 클래스의 메서드를 하위 클래스에서 재정의하여 다양한 동작을 구현
 
 ```
-class Animal { void speak() {} }
-class Dog extends Animal { void speak() { System.out.println("멍멍"); } }
+class Vehicle {
+    void startEngine() {
+        System.out.println("엔진 기본 시동");
+    }
+}
+
+class ElectricCar extends Vehicle {
+    @Override
+    void startEngine() {
+        System.out.println("전기 모터 구동 시작");
+    }
+}
+
+class SportsCar extends Vehicle {
+    @Override
+    void startEngine() {
+        System.out.println("고성능 엔진 가동");
+    }
+}
+
+Vehicle v1 = new ElectricCar();
+Vehicle v2 = new SportsCar();
+
+v1.startEngine();  // "전기 모터 구동 시작"
+v2.startEngine();  // "고성능 엔진 가동"
 ```
+
 ### 🟣 설계 원칙 (SOLID)
 #### 단일 책임 원칙 (SRP) : 한 클래스는 한 책임만.
 하나의 클래스는 하나의 책임만 가져야 하며, 변경의 이유도 하나여야 합니다.
